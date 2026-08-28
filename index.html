@@ -121,6 +121,23 @@ header::after {
   margin: 24px auto 0;
 }
 
+/* ---------- Bandeau « aucune connexion » ---------- */
+/* Il n'apparaît QUE si le téléphone n'a pas de réseau. Le reste du temps,
+   il est complètement invisible. */
+.hors-reseau {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--bordure);
+  border-left: 4px solid #B0791F;      /* ambre, pour signaler sans alarmer */
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin: 22px 0 0;
+  font-size: 17px;
+}
+.hors-reseau svg { width: 24px; height: 24px; flex: 0 0 auto; color: #8A5E14; }
+
 /* ---------- Le bouton principal, vers Anémone ---------- */
 .bouton-principal {
   display: block;
@@ -323,6 +340,25 @@ footer strong { color: var(--texte); font-weight: 600; }
   <h1>Camping <span class="insecable">Rivière-Ouelle</span></h1>
   <p>Campeurs saisonniers</p>
 </header>
+
+<!-- ===================================================================
+     BANDEAU HORS RÉSEAU
+     Le petit programme en bas de page l'affiche seulement quand le téléphone
+     n'a pas de connexion, et le fait disparaître dès qu'elle revient.
+     =================================================================== -->
+<p class="hors-reseau" id="hors-reseau" hidden>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M2 8.8a16 16 0 0 1 20 0"/>
+    <path d="M5 12.5a11 11 0 0 1 14 0"/>
+    <path d="M8.5 16.2a6 6 0 0 1 7 0"/>
+    <path d="M12 20h.01"/>
+    <path d="M3 3l18 18"/>
+  </svg>
+  <span><strong>Aucune connexion Internet.</strong> Les horaires et les règlements
+  restent affichés. Ton dossier de saisonnier, la réservation et le site du
+  camping demandent une connexion.</span>
+</p>
 
 <!-- ===================================================================
      BLOC D'INSTALLATION — la première chose que voit un nouveau venu.
@@ -590,6 +626,14 @@ footer strong { color: var(--texte); font-weight: 600; }
   window.addEventListener('appinstalled', function () {
     bloc.hidden = true;
   });
+
+  // On surveille la connexion Internet. Le bandeau apparaît quand elle tombe
+  // et disparaît quand elle revient, sans que la personne ait à recharger.
+  var bandeau = document.getElementById('hors-reseau');
+  function majConnexion() { bandeau.hidden = navigator.onLine; }
+  majConnexion();
+  window.addEventListener('online', majConnexion);
+  window.addEventListener('offline', majConnexion);
 
   // On active la copie hors ligne (le fichier sw.js).
   // Si le navigateur refuse, la page fonctionne pareil, sans le mode hors réseau.
