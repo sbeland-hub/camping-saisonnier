@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#EFE4D2">
+<!-- Ce qui rend la page installable sur un écran d'accueil -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icone-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<!-- Le nom qui apparaît sous l'icône sur l'écran d'accueil. Court, sinon il est coupé. -->
+<meta name="apple-mobile-web-app-title" content="Camping R-O">
+<meta name="description" content="Accès rapide au dossier des campeurs saisonniers du Camping Rivière-Ouelle.">
+<title>Camping Rivière-Ouelle</title>
+
+<style>
+/* ===================================================================
+   LES COULEURS ET LES TAILLES
+   Change une valeur ici et toute la page suit.
+   Palette : noir chaud et brun bois, avec le doré et le vert de gris
+   du logo du camping comme seules touches de couleur.
+   =================================================================== */
+:root {
+  --fond:       #EFE4D2;   /* bois de chêne clair, le fond de la page */
+  --surface:    #F7F0E4;   /* crème, le fond des cartes */
+  --surface-2:  #E7DAC5;   /* bois un peu plus foncé */
+  --bordure:    #D3C2A8;   /* liseré discret */
+  --texte:      #2E2318;   /* brun foncé */
+  --texte-doux: #6B5942;   /* brun moyen, textes secondaires */
+  --bleu:       #14618F;   /* bleu profond — la couleur d'action */
+  --bleu-fonce: #0E4D73;   /* le bleu quand on appuie */
+  --sur-bleu:   #FFFFFF;   /* le texte posé sur le bouton bleu */
+}
+
+* { box-sizing: border-box; }
+
+/* Quand le programme met « hidden » sur un élément, il doit VRAIMENT disparaître.
+   Sans cette ligne, les styles d'affichage plus bas prennent le dessus et
+   un bouton caché resterait visible. */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0 auto;
+  padding: 0 22px 64px;
+  max-width: 620px;
+  background-color: var(--fond);
+  /* LE BOIS. Quatre couches dessinées par le navigateur, aucune image :
+     rien à télécharger et ça fonctionne hors réseau.
+       - trois couches de nervures fines, d'espacements différents (7, 17 et
+         31 pixels) pour que le motif ne se répète jamais visiblement ;
+       - une couche pour la séparation entre les planches, tous les 88 pixels.
+     Tous les textes de la page sont posés sur des cartes crème : le bois
+     n'apparaît que dans les espaces, jamais derrière les mots.
+     Pour un bois plus discret, baisse les nombres après « rgba ».
+     Pour enlever la texture, efface tout le bloc background-image. */
+  background-image:
+    repeating-linear-gradient(180deg,
+      rgba(124, 88, 46, .032) 0px, rgba(124, 88, 46, .032) 1px,
+      transparent 1px, transparent 7px),
+    repeating-linear-gradient(180deg,
+      rgba(124, 88, 46, .026) 0px, rgba(124, 88, 46, .026) 2px,
+      transparent 2px, transparent 17px),
+    repeating-linear-gradient(180deg,
+      rgba(94, 64, 32, .022) 0px, rgba(94, 64, 32, .022) 1px,
+      transparent 1px, transparent 31px),
+    repeating-linear-gradient(180deg,
+      rgba(255, 255, 255, .05) 0px, rgba(255, 255, 255, .05) 1px,
+      transparent 1px, transparent 86px,
+      rgba(0, 0, 0, .13) 86px, rgba(0, 0, 0, .13) 88px);
+  color: var(--texte);
+  /* Police du système : rapide, lisible, déjà installée sur tous les téléphones */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 19px;      /* JAMAIS descendre sous 18px : clientèle 50 ans et plus */
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- En-tête ---------- */
+header {
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: 16px;
+  padding: 34px 18px 28px;
+  margin-top: 26px;
+}
+header img {
+  width: 88px; height: 88px;
+  display: block; margin: 0 auto 18px;
+  border-radius: 20px;              /* même arrondi que l'icône d'un téléphone */
+  border: 1px solid var(--bordure);
+}
+/* « Rivière-Ouelle » ne doit jamais se casser au trait d'union */
+.insecable { white-space: nowrap; }
+
+header h1 {
+  font-size: 26px;
+  line-height: 1.2;
+  margin: 0 0 8px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+header p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--texte-doux);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+/* Fin liseré doré sous l'en-tête */
+header::after {
+  content: "";
+  display: block;
+  width: 52px;
+  height: 2px;
+  background: var(--bleu);
+  margin: 24px auto 0;
+}
+
+/* ---------- Le bouton principal, vers Anémone ---------- */
+.bouton-principal {
+  display: block;
+  background: var(--bleu);
+  color: var(--sur-bleu);
+  text-decoration: none;
+  text-align: center;
+  border-radius: 14px;
+  padding: 22px 20px;
+  min-height: 92px;          /* bien au-dessus du minimum de 56px */
+  margin: 26px 0 12px;
+  box-shadow: 0 3px 0 var(--bleu-fonce);
+}
+.bouton-principal:active { background: var(--bleu-fonce); box-shadow: none; transform: translateY(3px); }
+.bouton-principal .titre  { display: block; font-size: 24px; font-weight: 700; line-height: 1.25; }
+.bouton-principal .detail { display: block; font-size: 16px; margin-top: 8px; opacity: .78; }
+
+/* Le bouton d'installation (Android) : même forme, mais en retrait,
+   pour ne pas concurrencer le bouton principal. */
+button.bouton-principal { width: 100%; border: none; font-family: inherit; cursor: pointer; }
+#bouton-installer {
+  background: transparent;
+  color: var(--texte);
+  border: 2px solid var(--texte);
+  box-shadow: none;
+  margin: 4px 0 0;
+  min-height: 78px;
+}
+#bouton-installer:active { background: rgba(46, 35, 24, .08); transform: none; }
+#bouton-installer .detail { opacity: .85; }
+
+/* Petite ligne qui montre où le bouton mène vraiment */
+.destination {
+  text-align: center;
+  font-size: 15px;
+  color: var(--texte-doux);
+  margin: 0 0 32px;
+  word-break: break-word;
+}
+.destination strong { color: var(--texte); font-weight: 600; }
+
+/* ---------- Encadré d'aide ---------- */
+.aide {
+  background: var(--surface-2);
+  border-left: 3px solid var(--bleu);
+  border-radius: 4px;
+  padding: 20px 22px;
+  margin: 0 0 38px;
+  font-size: 18px;
+}
+.aide p { margin: 0 0 12px; }
+.aide p:last-child { margin-bottom: 0; }
+.aide ol { padding-left: 22px; margin: 14px 0; }
+.aide li { margin-bottom: 10px; }
+.aide li::marker { color: var(--bleu); font-weight: 700; }
+
+/* ---------- Sections ---------- */
+section { margin-bottom: 42px; }
+h2 {
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--texte-doux);
+  border-bottom: 1px solid var(--bordure);
+  padding-bottom: 12px;
+  margin: 0 0 20px;
+}
+
+/* ---------- Cartes d'information ---------- */
+.infos { list-style: none; padding: 0; margin: 0; }
+.infos li {
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+}
+.infos .quoi  { display: block; font-weight: 600; font-size: 19px; }
+.infos .quand { display: block; font-size: 18px; color: var(--texte-doux); margin-top: 3px; }
+
+/* Cartes d'info qui sont des liens vers le site du camping */
+.infos li.lien { padding: 0; }
+.infos li.lien a {
+  display: block;
+  padding: 18px 20px;
+  min-height: 72px;          /* minimum exigé : 56px */
+  text-decoration: none;
+  color: inherit;
+  border-radius: 12px;
+}
+.infos li.lien a:active { background: var(--surface-2); }
+.infos .fleche { float: right; font-size: 24px; color: var(--bleu); line-height: 1.1; }
+.infos .hors-ligne { display: block; font-size: 15px; color: var(--texte-doux); opacity: .75; margin-top: 6px; }
+
+/* ---------- Liste « l'essentiel des règlements » ---------- */
+.essentiel {
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: 12px;
+  padding: 2px 20px;
+  margin: 0 0 12px;
+}
+.essentiel li {
+  position: relative;
+  padding: 15px 0 15px 26px;
+  border-bottom: 1px solid var(--bordure);
+  font-size: 18px;
+}
+.essentiel li:last-child { border-bottom: none; }
+.essentiel li::before {
+  content: "";
+  position: absolute; left: 2px; top: 24px;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--bleu);
+}
+.essentiel strong { color: var(--texte); }
+
+/* ---------- Boutons de contact ---------- */
+.contact {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: 12px;
+  color: var(--texte);
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 600;
+  min-height: 76px;          /* minimum exigé : 56px */
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+.contact:active { background: var(--surface-2); }
+/* L'adresse a l'allure d'une carte de contact, mais ce n'est pas un lien */
+.adresse { margin-top: 4px; }
+.adresse:active { background: var(--surface); }
+.contact .pictogramme {
+  width: 26px; height: 26px;
+  flex: 0 0 auto;
+  color: var(--bleu);
+}
+/* Le petit cadenas devant l'adresse du site */
+.cadenas { width: 14px; height: 14px; vertical-align: -2px; margin-right: 3px; color: var(--texte-doux); }
+.contact .sous { display: block; font-size: 16px; font-weight: 400; color: var(--texte-doux); }
+
+/* ---------- Bloc d'installation (en haut, disparaît une fois installée) ---------- */
+.installation {
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: 14px;
+  padding: 24px 22px;
+  margin: 30px 0 4px;
+}
+.installation h2 {
+  border: none; padding: 0; margin: 0 0 10px;
+  font-size: 21px; font-weight: 600;
+  text-transform: none; letter-spacing: -0.01em;
+  color: var(--texte);
+  text-align: center;                /* demandé par Steve */
+}
+.installation .sous-titre {
+  margin: 0 0 22px; font-size: 17px; color: var(--texte-doux);
+  text-align: center;
+}
+/* Les étapes numérotées restent alignées à gauche : une liste centrée
+   est pénible à lire, les numéros ne s'alignent plus. */
+.installation h3 { font-size: 15px; font-weight: 600; text-transform: uppercase;
+                   letter-spacing: 0.12em; color: var(--texte-doux);
+                   margin: 0 0 14px; text-align: center; }
+.installation ol { padding-left: 22px; margin: 0; }
+.installation li { margin-bottom: 12px; }
+.installation li:last-child { margin-bottom: 0; }
+.installation li::marker { color: var(--bleu); font-weight: 700; }
+
+/* ---------- Pied de page ---------- */
+footer {
+  text-align: center;
+  font-size: 15px;
+  color: var(--texte-doux);
+  border-top: 1px solid var(--bordure);
+  padding-top: 26px;
+}
+footer p { margin: 4px 0; }
+footer strong { color: var(--texte); font-weight: 600; }
+
+/* Respecte les gens qui ont désactivé les animations */
+@media (prefers-reduced-motion: reduce) {
+  .bouton-principal:active { transform: none; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="icone-512.png" alt="" width="88" height="88">
+  <h1>Camping <span class="insecable">Rivière-Ouelle</span></h1>
+  <p>Campeurs saisonniers</p>
+</header>
+
+<!-- ===================================================================
+     BLOC D'INSTALLATION — la première chose que voit un nouveau venu.
+     Le petit programme en bas de page le fait disparaître une fois que
+     la personne a installé le raccourci. Elle ne le reverra plus jamais.
+     =================================================================== -->
+<section class="installation" id="installation">
+  <h2>Installe le camping sur ton écran d'accueil</h2>
+  <p class="sous-titre">Une seule fois. Après, un seul tap pour ouvrir ton dossier.</p>
+
+  <!-- Bouton réel : n'apparaît que sur Android, où l'installation est permise -->
+  <button type="button" class="bouton-principal" id="bouton-installer" hidden>
+    <span class="titre">Installer l'application</span>
+    <span class="detail">Ajoute l'icône du camping sur ton téléphone</span>
+  </button>
+
+  <!-- Instructions iPhone : Apple n'autorise aucun bouton d'installation -->
+  <div id="etapes-iphone" hidden>
+    <h3>Sur iPhone, en 3 gestes</h3>
+    <ol>
+      <li>Appuie sur le bouton <strong>Partager</strong> en bas de l'écran
+          (le carré avec une flèche vers le haut).</li>
+      <li>Fais glisser vers le bas et choisis
+          <strong>«&nbsp;Sur l'écran d'accueil&nbsp;»</strong>.</li>
+      <li>Appuie sur <strong>Ajouter</strong>, en haut à droite.</li>
+    </ol>
+  </div>
+
+  <!-- Instructions Android : utilisées si le navigateur ne propose pas le bouton -->
+  <div id="etapes-android" hidden>
+    <h3>Sur Android, en 3 gestes</h3>
+    <ol>
+      <li>Appuie sur les <strong>trois points</strong> en haut à droite.</li>
+      <li>Choisis <strong>«&nbsp;Installer l'application&nbsp;»</strong> ou
+          <strong>«&nbsp;Ajouter à l'écran d'accueil&nbsp;»</strong>.</li>
+      <li>Confirme avec <strong>Ajouter</strong>.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===================================================================
+     LE BOUTON PRINCIPAL
+     C'est la raison d'être de cette page. Il ouvre le portail Anémone.
+     ATTENTION : ne jamais remplacer ce lien par un lien copié depuis la
+     barre d'adresse du navigateur. Voir CLAUDE.md, section «&nbsp;Le lien&nbsp;».
+     =================================================================== -->
+<a class="bouton-principal"
+   href="https://www.anemonecamping.com/login.aspx?Langue=FR&amp;PartenaireID=850f808e-11bf-4b5f-9935-550608a7de45"
+   target="_blank" rel="noopener">
+  <span class="titre">Ouvrir mon dossier de saisonnier</span>
+  <span class="detail">Payer &middot; Signer &middot; Documents &middot; Messages</span>
+</a>
+
+<p class="destination">
+  <svg class="cadenas" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/>
+    <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/>
+  </svg>Ouvre le site officiel <strong>anemonecamping.com</strong>
+</p>
+
+<div class="aide">
+  <p><strong>Première connexion ? Ton identifiant, c'est le courriel principal
+     inscrit à ton dossier.</strong></p>
+  <ol>
+    <li>Appuie sur le bouton <strong>Ouvrir mon dossier de saisonnier</strong>, plus haut.</li>
+    <li>Sur la page d'Anémone, appuie sur <strong>Mot de passe oublié</strong>.</li>
+    <li>Inscris ton courriel. Anémone t'envoie un code.</li>
+    <li>Entre ce code pour accéder à ton dossier.</li>
+  </ol>
+  <p>Les fois suivantes, tu utilises simplement le même code.</p>
+  <p>Cette page ne te demande jamais ton code ni ton mot de passe. C'est le site
+     d'Anémone qui s'occupe de la connexion.</p>
+  <p>Ça bloque&nbsp;? Appelle-nous, on va t'aider.</p>
+</div>
+
+<!-- ===================================================================
+     INFOS PRATIQUES
+     C'est ici que tu modifies les horaires. Change simplement le texte
+     entre les balises, sauvegarde, et republie.
+     =================================================================== -->
+<section>
+  <h2>Infos pratiques</h2>
+  <ul class="infos">
+    <li>
+      <span class="quoi">Casse-croûte</span>
+      <span class="quand">Samedi et dimanche, de 7 h 30 à 11 h</span>
+    </li>
+    <li>
+      <span class="quoi">Piscine</span>
+      <span class="quand">Tous les jours, de midi à 20 h</span>
+      <span class="hors-ligne">Haute saison : du 20 juin au 10 septembre</span>
+    </li>
+    <li>
+      <span class="quoi">Accueil et dépanneur</span>
+      <span class="quand">Haute saison : lundi au jeudi 9 h à 21 h &middot;
+        vendredi et samedi 9 h à 22 h &middot; dimanche 8 h à 21 h</span>
+      <span class="hors-ligne">Basse saison : heures variées, tous les jours</span>
+    </li>
+    <li class="lien">
+      <a href="https://campingriviereouelle.com/programme-dactivites/" target="_blank" rel="noopener">
+        <span class="fleche" aria-hidden="true">&rsaquo;</span>
+        <span class="quoi">Programme d'activités</span>
+        <span class="quand">Les événements de la saison</span>
+        <span class="hors-ligne">Ouvre le site du camping &middot; demande Internet</span>
+      </a>
+    </li>
+  </ul>
+</section>
+
+<!-- ===================================================================
+     LES RÈGLEMENTS — L'ESSENTIEL
+     Ce résumé est volontairement court et fonctionne SANS INTERNET.
+     La version complète et officielle reste celle du site du camping.
+     Si tu modifies les règlements sur le site, relis ce bloc.
+     =================================================================== -->
+<section>
+  <h2>Les règlements &mdash; l'essentiel</h2>
+  <ul class="essentiel">
+    <li>Couvre-feu de <strong>23 h à 7 h</strong>. La barrière est fermée aux mêmes heures.</li>
+    <li>Vitesse maximale sur le terrain&nbsp;: <strong>10 km/h</strong>.</li>
+    <li>Maximum <strong>deux véhicules</strong> stationnés sur un site.</li>
+    <li>Animaux <strong>en laisse en tout temps</strong>. Interdits dans les bâtiments
+        et à la piscine. Ramasser les excréments.</li>
+    <li>Les <strong>visiteurs</strong> s'enregistrent à l'accueil, paient l'entrée
+        et quittent avant 23 h.</li>
+    <li><strong>Feux</strong> permis seulement aux endroits aménagés, sous surveillance
+        constante, éteints avant de partir.</li>
+    <li>Les enfants de <strong>moins de 13 ans</strong> ne peuvent pas être laissés
+        seuls au camping.</li>
+  </ul>
+
+  <ul class="infos">
+    <li class="lien">
+      <a href="https://campingriviereouelle.com/reglements/" target="_blank" rel="noopener">
+        <span class="fleche" aria-hidden="true">&rsaquo;</span>
+        <span class="quoi">Règlements complets</span>
+        <span class="quand">La version officielle, celle qui fait foi</span>
+        <span class="hors-ligne">Ouvre le site du camping &middot; demande Internet</span>
+      </a>
+    </li>
+  </ul>
+</section>
+
+<!-- ===================================================================
+     LE CAMPING EN LIGNE
+     Deux liens vers l'extérieur. Ils demandent Internet, contrairement
+     aux horaires et à l'essentiel des règlements.
+     =================================================================== -->
+<section>
+  <h2>Le camping en ligne</h2>
+  <ul class="infos">
+    <li class="lien">
+      <a href="https://campingriviereouelle.com/" target="_blank" rel="noopener">
+        <span class="fleche" aria-hidden="true">&rsaquo;</span>
+        <span class="quoi">Site officiel du camping</span>
+        <span class="quand">Services, tarifs, activités, plan du terrain</span>
+        <span class="hors-ligne">campingriviereouelle.com &middot; demande Internet</span>
+      </a>
+    </li>
+    <li class="lien">
+      <a href="https://www.anemonecamping.com/RecherchePartenaire.aspx?PartenaireID=850F808E-11BF-4B5F-9935-550608A7DE45&amp;Langue=FR"
+         target="_blank" rel="noopener">
+        <span class="fleche" aria-hidden="true">&rsaquo;</span>
+        <span class="quoi">Réserver en ligne</span>
+        <span class="quand">Nuitées, prêts-à-camper, séjours de visiteurs</span>
+        <span class="hors-ligne">anemonecamping.com &middot; demande Internet</span>
+      </a>
+    </li>
+  </ul>
+</section>
+
+<!-- ===================================================================
+     CONTACTS
+     tel: et mailto: sont compris par tous les téléphones.
+     Un tap lance l'appel ou ouvre l'application de courriel.
+     =================================================================== -->
+<section>
+  <h2>Nous joindre</h2>
+
+  <a class="contact" href="tel:+14188561484">
+    <svg class="pictogramme" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>
+    </svg>
+    <span>Appeler le camping
+      <span class="sous">418-856-1484</span>
+    </span>
+  </a>
+
+  <a class="contact" href="mailto:info@campingriviereouelle.com">
+    <svg class="pictogramme" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="2" y="4.5" width="20" height="15" rx="2.5"/>
+      <path d="m2.5 7.5 9.5 6 9.5-6"/>
+    </svg>
+    <span>Écrire un courriel
+      <span class="sous">info@campingriviereouelle.com</span>
+    </span>
+  </a>
+
+  <div class="contact adresse">
+    <svg class="pictogramme" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20 10.5c0 5.5-8 12-8 12s-8-6.5-8-12a8 8 0 0 1 16 0z"/>
+      <circle cx="12" cy="10.3" r="2.8"/>
+    </svg>
+    <span>176, chemin de la Pointe
+      <span class="sous">Rivière-Ouelle (Québec)</span>
+    </span>
+  </div>
+</section>
+
+<footer>
+  <p><strong>Camping Rivière-Ouelle</strong></p>
+  <p>Corporation Touristique de Rivière-Ouelle</p>
+</footer>
+
+<script>
+// ===================================================================
+// Un seul petit programme dans toute la page.
+// Il cache les instructions d'installation quand la page est DÉJÀ
+// installée sur l'écran d'accueil. Rien d'autre. Aucun traçage,
+// aucune donnée envoyée nulle part.
+// ===================================================================
+(function () {
+  var bloc          = document.getElementById('installation');
+  var bouton        = document.getElementById('bouton-installer');
+  var etapesIphone  = document.getElementById('etapes-iphone');
+  var etapesAndroid = document.getElementById('etapes-android');
+
+  // Est-ce que la page est DÉJÀ installée sur l'écran d'accueil ?
+  var dejaInstallee =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true;
+
+  if (dejaInstallee) {
+    // Oui : on cache tout le bloc. La personne ne le reverra plus jamais.
+    bloc.hidden = true;
+  } else {
+    // Non : on montre les instructions qui correspondent à son téléphone.
+    var estIphone = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    (estIphone ? etapesIphone : etapesAndroid).hidden = false;
+  }
+
+  // ANDROID SEULEMENT. Chrome nous avertit qu'il peut installer l'application.
+  // On attrape cet avertissement et on affiche un VRAI bouton d'installation.
+  // Sur iPhone, cet avertissement n'arrive jamais : Apple ne le permet pas.
+  var invitation = null;
+  window.addEventListener('beforeinstallprompt', function (evenement) {
+    evenement.preventDefault();     // on choisit nous-mêmes le bon moment
+    invitation = evenement;
+    etapesAndroid.hidden = true;    // le vrai bouton remplace le mode d'emploi
+    bouton.hidden = false;
+  });
+
+  bouton.addEventListener('click', function () {
+    if (!invitation) { return; }
+    invitation.prompt();            // ouvre la fenêtre d'installation d'Android
+    invitation = null;
+    bouton.hidden = true;
+  });
+
+  // Installation réussie : le bloc n'a plus de raison d'être.
+  window.addEventListener('appinstalled', function () {
+    bloc.hidden = true;
+  });
+
+  // On active la copie hors ligne (le fichier sw.js).
+  // Si le navigateur refuse, la page fonctionne pareil, sans le mode hors réseau.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "name": "Camping Rivière-Ouelle",
+  "short_name": "Camping R-O",
+  "description": "Accès au dossier des campeurs saisonniers et infos pratiques du Camping Rivière-Ouelle.",
+  "lang": "fr-CA",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EFE4D2",
+  "theme_color": "#EFE4D2",
+  "icons": [
+    {
+      "src": "icone-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icone-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icone-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
