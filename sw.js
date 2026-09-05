@@ -7,7 +7,7 @@
    téléphones à récupérer la nouvelle version au lieu de garder l'ancienne.
    =========================================================================== */
 
-const VERSION = "camping-riviere-ouelle-v7";
+const VERSION = "camping-riviere-ouelle-v12";
 
 // Les fichiers gardés sur le téléphone pour fonctionner sans réseau.
 const FICHIERS = [
