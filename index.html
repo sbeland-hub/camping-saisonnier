@@ -551,12 +551,24 @@ footer strong { color: var(--texte); font-weight: 600; }
     <li>Les <strong>visiteurs</strong> s'enregistrent à l'accueil, paient l'entrée
         et quittent avant 23 h.</li>
     <li><strong>Feux</strong> permis seulement aux endroits aménagés, sous surveillance
-        constante, éteints avant de partir.</li>
+        constante, éteints avant de partir. Vérifie le danger d'incendie avant
+        d'allumer.</li>
     <li>Les enfants de <strong>moins de 13 ans</strong> ne peuvent pas être laissés
         seuls au camping.</li>
   </ul>
 
   <ul class="infos">
+    <!-- La SOPFEU est l'autorité québécoise : c'est elle qui fixe chaque jour
+         le niveau de danger et qui décrète les interdictions de feu. -->
+    <li class="lien">
+      <a href="https://sopfeu.qc.ca/carte/?showFireDanger=true" target="_blank" rel="noopener">
+        <span class="fleche" aria-hidden="true">&rsaquo;</span>
+        <span class="quoi">Danger d'incendie aujourd'hui</span>
+        <span class="quand">Niveau de risque et interdictions de feu, mis à jour
+          chaque jour par la SOPFEU</span>
+        <span class="hors-ligne">sopfeu.qc.ca &middot; demande Internet</span>
+      </a>
+    </li>
     <li class="lien">
       <a href="https://campingriviereouelle.com/reglements/" target="_blank" rel="noopener">
         <span class="fleche" aria-hidden="true">&rsaquo;</span>
