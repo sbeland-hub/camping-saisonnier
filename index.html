@@ -105,10 +105,10 @@ header h1 {
 }
 header p {
   margin: 0;
-  font-size: 14px;
+  font-size: 18px;
   color: var(--texte-doux);
   text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.08em;   /* resserré : à 18px, le sous-titre doit tenir sur une ligne */
 }
 
 /* Fin liseré doré sous l'en-tête */
@@ -134,7 +134,7 @@ header::after {
   border-radius: 10px;
   padding: 16px 18px;
   margin: 22px 0 0;
-  font-size: 17px;
+  font-size: 18px;
 }
 .hors-reseau svg { width: 24px; height: 24px; flex: 0 0 auto; color: #8A5E14; }
 
@@ -153,7 +153,7 @@ header::after {
 }
 .bouton-principal:active { background: var(--bleu-fonce); box-shadow: none; transform: translateY(3px); }
 .bouton-principal .titre  { display: block; font-size: 24px; font-weight: 700; line-height: 1.25; }
-.bouton-principal .detail { display: block; font-size: 16px; margin-top: 8px; opacity: .78; }
+.bouton-principal .detail { display: block; font-size: 18px; margin-top: 8px; opacity: .78; }
 
 /* Le bouton d'installation (Android) : même forme, mais en retrait,
    pour ne pas concurrencer le bouton principal. */
@@ -172,7 +172,7 @@ button.bouton-principal { width: 100%; border: none; font-family: inherit; curso
 /* Petite ligne qui montre où le bouton mène vraiment */
 .destination {
   text-align: center;
-  font-size: 15px;
+  font-size: 18px;
   color: var(--texte-doux);
   margin: 0 0 32px;
   word-break: break-word;
@@ -203,7 +203,7 @@ button.bouton-principal { width: 100%; border: none; font-family: inherit; curso
   margin: 0 0 38px;
 }
 .chantier .etiquette {
-  font-size: 13px; font-weight: 600;
+  font-size: 18px; font-weight: 600;
   text-transform: uppercase; letter-spacing: .14em;
   color: var(--bleu);
   margin: 0 0 10px;
@@ -232,7 +232,7 @@ button.bouton-principal { width: 100%; border: none; font-family: inherit; curso
 /* ---------- Sections ---------- */
 section { margin-bottom: 42px; }
 h2 {
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -266,7 +266,7 @@ h2 {
 }
 .infos li.lien a:active { background: var(--surface-2); }
 .infos .fleche { float: right; font-size: 24px; color: var(--bleu); line-height: 1.1; }
-.infos .hors-ligne { display: block; font-size: 15px; color: var(--texte-doux); opacity: .75; margin-top: 6px; }
+.infos .hors-ligne { display: block; font-size: 18px; color: var(--texte-doux); opacity: .75; margin-top: 6px; }
 
 /* ---------- Liste « l'essentiel des règlements » ---------- */
 .essentiel {
@@ -318,7 +318,7 @@ h2 {
 }
 /* Le petit cadenas devant l'adresse du site */
 .cadenas { width: 14px; height: 14px; vertical-align: -2px; margin-right: 3px; color: var(--texte-doux); }
-.contact .sous { display: block; font-size: 16px; font-weight: 400; color: var(--texte-doux); }
+.contact .sous { display: block; font-size: 18px; font-weight: 400; color: var(--texte-doux); }
 
 /* ---------- Bloc d'installation (en haut, disparaît une fois installée) ---------- */
 .installation {
@@ -336,12 +336,12 @@ h2 {
   text-align: center;                /* demandé par Steve */
 }
 .installation .sous-titre {
-  margin: 0 0 22px; font-size: 17px; color: var(--texte-doux);
+  margin: 0 0 22px; font-size: 18px; color: var(--texte-doux);
   text-align: center;
 }
 /* Les étapes numérotées restent alignées à gauche : une liste centrée
    est pénible à lire, les numéros ne s'alignent plus. */
-.installation h3 { font-size: 15px; font-weight: 600; text-transform: uppercase;
+.installation h3 { font-size: 18px; font-weight: 600; text-transform: uppercase;
                    letter-spacing: 0.12em; color: var(--texte-doux);
                    margin: 0 0 14px; text-align: center; }
 .installation ol { padding-left: 22px; margin: 0; }
@@ -352,7 +352,7 @@ h2 {
 /* ---------- Pied de page ---------- */
 footer {
   text-align: center;
-  font-size: 15px;
+  font-size: 18px;
   color: var(--texte-doux);
   border-top: 1px solid var(--bordure);
   padding-top: 26px;
